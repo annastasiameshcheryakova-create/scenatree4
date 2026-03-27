@@ -21,7 +21,7 @@
 </head>
 <body>
   <a-scene
-    mindar-image="imageTargetSrc: ./markers/targets.mind; autoStart: true; uiLoading: yes; uiScanning: yes; uiError: yes;"
+    mindar-image="imageTargetSrc: ../markers/targets.mind; autoStart: true; uiLoading: yes; uiScanning: yes; uiError: yes;"
     embedded
     color-space="sRGB"
     renderer="colorManagement: true; physicallyCorrectLights: true;"
@@ -29,8 +29,8 @@
     device-orientation-permission-ui="enabled: false"
   >
     <a-assets timeout="10000">
-      <a-asset-item id="girlModel" src="./models/girl.glb"></a-asset-item>
-      <a-asset-item id="dragonModel" src="./models/dragon.glb"></a-asset-item>
+      <a-asset-item id="girlModel" src="../models/girl.glb"></a-asset-item>
+      <a-asset-item id="dragonModel" src="../models/dragon.glb"></a-asset-item>
     </a-assets>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
