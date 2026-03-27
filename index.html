@@ -1,120 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AR Scene</title>
-
-  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #000;
-    }
-
-    #hint {
-      position: fixed;
-      left: 50%;
-      bottom: 20px;
-      transform: translateX(-50%);
-      color: white;
-      background: rgba(0,0,0,0.6);
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      z-index: 10;
-    }
-  </style>
-
-  <script>
-    AFRAME.registerComponent("auto-fit", {
-      schema: {
-        size: { default: 0.5 },
-        yOffset: { default: 0.02 }
-      },
-
-      init: function () {
-        this.el.addEventListener("model-loaded", () => {
-          const mesh = this.el.getObject3D("mesh");
-          if (!mesh) return;
-
-          const box = new THREE.Box3().setFromObject(mesh);
-          const size = new THREE.Vector3();
-          const center = new THREE.Vector3();
-
-          box.getSize(size);
-          box.getCenter(center);
-
-          const maxDim = Math.max(size.x, size.y, size.z);
-          if (!maxDim || !isFinite(maxDim)) return;
-
-          const scale = this.data.size / maxDim;
-          this.el.object3D.scale.set(scale, scale, scale);
-
-          const newBox = new THREE.Box3().setFromObject(mesh);
-          const newCenter = new THREE.Vector3();
-          newBox.getCenter(newCenter);
-
-          this.el.object3D.position.set(
-            -newCenter.x,
-            -newBox.min.y + this.data.yOffset,
-            -newCenter.z
-          );
-        });
-
-        this.el.addEventListener("model-error", () => {
-          console.log("Model loading error");
-        });
-      }
-    });
-  </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; }
+    </style>
 </head>
 <body>
-  <div id="hint">Наведи камеру на маркер</div>
+    <a-scene 
+        mindar-image="imageTargetSrc: ./targets.mind;" 
+        color-space="sRGB" 
+        renderer="colorManagement: true, physicallyCorrectLights" 
+        vr-mode-ui="enabled: false" 
+        device-orientation-permission-ui="enabled: false">
+        
+        <a-assets>
+            <a-asset-item id="girlModel" src="./3d_anime_character_girl_for_blender_c1.glb"></a-asset-item>
+            <a-asset-item id="dragonModel" src="./dragon_statue.glb"></a-asset-item>
+        </a-assets>
 
-  <a-scene
-    mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiLoading: true; uiScanning: true; uiError: true;"
-    embedded
-    color-space="sRGB"
-    renderer="colorManagement: true; physicallyCorrectLights: true"
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false"
-  >
-    <a-assets timeout="30000">
-      <a-asset-item id="girlModel" src="./girl.glb"></a-asset-item>
-      <a-asset-item id="dragonModel" src="./dragon.glb"></a-asset-item>
-    </a-assets>
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <a-entity light="type: ambient; intensity: 1.5"></a-entity>
-    <a-entity light="type: directional; intensity: 1.2" position="1 2 1"></a-entity>
-    <a-entity light="type: directional; intensity: 1.0" position="-1 1 1"></a-entity>
+        <a-entity mindar-image-target="targetIndex: 0">
+            <a-gltf-model 
+                src="#girlModel" 
+                rotation="0 0 0" 
+                position="0 0 0" 
+                scale="0.5 0.5 0.5">
+            </a-gltf-model>
+        </a-entity>
 
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+        <a-entity mindar-image-target="targetIndex: 1">
+            <a-gltf-model 
+                src="#dragonModel" 
+                rotation="90 0 0" 
+                position="0 0 0" 
+                scale="0.01 0.01 0.01">
+            </a-gltf-model>
+        </a-entity>
 
-    <!-- Маркер 1 -->
-    <a-entity mindar-image-target="targetIndex: 0">
-      <a-entity
-        gltf-model="#girlModel"
-        auto-fit="size: 0.45; yOffset: 0.01"
-        rotation="0 0 0">
-      </a-entity>
-    </a-entity>
-
-    <!-- Маркер 2 -->
-    <a-entity mindar-image-target="targetIndex: 1">
-      <a-entity
-        gltf-model="#dragonModel"
-        auto-fit="size: 0.55; yOffset: 0.01"
-        rotation="0 0 0">
-      </a-entity>
-    </a-entity>
-  </a-scene>
+    </a-scene>
 </body>
 </html>
