@@ -15,23 +15,26 @@
       overflow: hidden;
       width: 100%;
       height: 100%;
+      background: #000;
     }
   </style>
 </head>
 <body>
   <a-scene
-    mindar-image="imageTargetSrc: ./markers/targets.mind; autoStart: true; uiScanning: true; uiLoading: true; uiError: true;"
+    mindar-image="imageTargetSrc: ./markers/targets.mind; autoStart: true; uiScanning: yes; uiLoading: yes; uiError: yes;"
     color-space="sRGB"
-    renderer="colorManagement: true, physicallyCorrectLights"
+    renderer="colorManagement: true, physicallyCorrectLights: true"
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false"
+    embedded
   >
     <a-assets>
       <a-asset-item id="girlModel" src="./models/girl.glb"></a-asset-item>
       <a-asset-item id="dragonModel" src="./models/dragon.glb"></a-asset-item>
     </a-assets>
 
-    <!-- Первый маркер: eurofast -->
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
     <a-entity mindar-image-target="targetIndex: 0">
       <a-gltf-model
         src="#girlModel"
@@ -41,7 +44,6 @@
       </a-gltf-model>
     </a-entity>
 
-    <!-- Второй маркер: jiu-jitsu -->
     <a-entity mindar-image-target="targetIndex: 1">
       <a-gltf-model
         src="#dragonModel"
@@ -50,8 +52,6 @@
         scale="0.2 0.2 0.2">
       </a-gltf-model>
     </a-entity>
-
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
   </a-scene>
 </body>
 </html>
