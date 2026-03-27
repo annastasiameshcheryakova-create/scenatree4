@@ -15,7 +15,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: black;
+      background: #000;
     }
   </style>
 </head>
@@ -24,35 +24,30 @@
     mindar-image="imageTargetSrc: ./markers/targets.mind; autoStart: true; uiLoading: yes; uiScanning: yes; uiError: yes;"
     embedded
     color-space="sRGB"
-    renderer="colorManagement: true; physicallyCorrectLights: true;"
+    renderer="colorManagement: true"
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false"
   >
-    <a-assets timeout="10000">
+    <a-assets timeout="30000">
       <a-asset-item id="girlModel" src="./models/girl.glb"></a-asset-item>
       <a-asset-item id="dragonModel" src="./models/dragon.glb"></a-asset-item>
     </a-assets>
 
+    <a-entity light="type: ambient; intensity: 1"></a-entity>
+    <a-entity light="type: directional; intensity: 1.4" position="0 2 1"></a-entity>
+
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <!-- Маркер 1 -->
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model
-        src="#girlModel"
-        position="0 0 0"
-        rotation="0 0 0"
-        scale="0.05 0.05 0.05">
-      </a-gltf-model>
+      <a-entity position="0 0 0.1" rotation="0 0 0" scale="0.2 0.2 0.2">
+        <a-gltf-model src="#girlModel"></a-gltf-model>
+      </a-entity>
     </a-entity>
 
-    <!-- Маркер 2 -->
     <a-entity mindar-image-target="targetIndex: 1">
-      <a-gltf-model
-        src="#dragonModel"
-        position="0 0 0"
-        rotation="0 0 0"
-        scale="0.05 0.05 0.05">
-      </a-gltf-model>
+      <a-entity position="0 0 0.1" rotation="0 0 0" scale="0.15 0.15 0.15">
+        <a-gltf-model src="#dragonModel"></a-gltf-model>
+      </a-entity>
     </a-entity>
   </a-scene>
 </body>
