@@ -4,13 +4,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    
     <style>
         body { margin: 0; overflow: hidden; }
+        /* Простий UI для користувача */
+        #ui { 
+            position: fixed; top: 10px; left: 10px; z-index: 1000; 
+            color: white; background: rgba(0,0,0,0.5); 
+            padding: 8px; font-family: sans-serif; border-radius: 4px; 
+        }
     </style>
 </head>
 <body>
+    <div id="ui">Наведіть камеру на маркер JIU-JITSU або EUROFAST</div>
+
     <a-scene 
-        mindar-image="imageTargetSrc: ./targets.mind;" 
+        mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiError: yes; uiLoading: yes; uiScanning: yes;" 
         color-space="sRGB" 
         renderer="colorManagement: true, physicallyCorrectLights" 
         vr-mode-ui="enabled: false" 
@@ -27,8 +36,8 @@
             <a-gltf-model 
                 src="#girlModel" 
                 rotation="0 0 0" 
-                position="0 0 0" 
-                scale="0.5 0.5 0.5">
+                position="0 -0.5 0" 
+                scale="0.8 0.8 0.8">
             </a-gltf-model>
         </a-entity>
 
@@ -37,7 +46,7 @@
                 src="#dragonModel" 
                 rotation="90 0 0" 
                 position="0 0 0" 
-                scale="0.01 0.01 0.01">
+                scale="0.05 0.05 0.05">
             </a-gltf-model>
         </a-entity>
 
