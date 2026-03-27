@@ -17,14 +17,79 @@
       overflow: hidden;
       background: #000;
     }
+
+    #hint {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      z-index: 10;
+      color: white;
+      background: rgba(0,0,0,0.55);
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      text-align: center;
+    }
   </style>
+
+  <script>
+    AFRAME.registerComponent("auto-fit", {
+      schema: {
+        size: { default: 0.45 },     // итоговый размер модели над маркером
+        yOffset: { default: 0.02 }   // чуть поднять над маркером
+      },
+
+      init: function () {
+        this.el.addEventListener("model-loaded", () => {
+          const mesh = this.el.getObject3D("mesh");
+          if (!mesh) return;
+
+          const box = new THREE.Box3().setFromObject(mesh);
+          const size = new THREE.Vector3();
+          const center = new THREE.Vector3();
+
+          box.getSize(size);
+          box.getCenter(center);
+
+          const maxDim = Math.max(size.x, size.y, size.z);
+          if (!maxDim || !isFinite(maxDim)) return;
+
+          const scale = this.data.size / maxDim;
+          this.el.object3D.scale.set(scale, scale, scale);
+
+          // пересчитываем box после масштабирования
+          const scaledBox = new THREE.Box3().setFromObject(mesh);
+          const scaledCenter = new THREE.Vector3();
+          const scaledSize = new THREE.Vector3();
+
+          scaledBox.getCenter(scaledCenter);
+          scaledBox.getSize(scaledSize);
+
+          // центрируем по X/Z и ставим основание модели на маркер
+          this.el.object3D.position.set(
+            -scaledCenter.x,
+            -scaledBox.min.y + this.data.yOffset,
+            -scaledCenter.z
+          );
+        });
+
+        this.el.addEventListener("model-error", (e) => {
+          console.error("Model failed to load:", e);
+        });
+      }
+    });
+  </script>
 </head>
 <body>
+  <div id="hint">Наведи камеру на маркер</div>
+
   <a-scene
-    mindar-image="imageTargetSrc: ./markers/targets.mind; autoStart: true; uiLoading: yes; uiScanning: yes; uiError: yes;"
+    mindar-image="imageTargetSrc: ./markers/targets.mind; autoStart: true; uiLoading: true; uiScanning: true; uiError: true;"
     embedded
     color-space="sRGB"
-    renderer="colorManagement: true"
+    renderer="colorManagement: true; physicallyCorrectLights: true"
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false"
   >
@@ -33,20 +98,27 @@
       <a-asset-item id="dragonModel" src="./models/dragon.glb"></a-asset-item>
     </a-assets>
 
-    <a-entity light="type: ambient; intensity: 1"></a-entity>
-    <a-entity light="type: directional; intensity: 1.4" position="0 2 1"></a-entity>
+    <a-entity light="type: ambient; intensity: 1.4"></a-entity>
+    <a-entity light="type: directional; intensity: 1.2" position="1 2 1"></a-entity>
+    <a-entity light="type: directional; intensity: 0.9" position="-1 1 1"></a-entity>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
+    <!-- Маркер 1 -->
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-entity position="0 0 0.1" rotation="0 0 0" scale="0.2 0.2 0.2">
-        <a-gltf-model src="#girlModel"></a-gltf-model>
+      <a-entity
+        gltf-model="#girlModel"
+        auto-fit="size: 0.45; yOffset: 0.01"
+        rotation="0 0 0">
       </a-entity>
     </a-entity>
 
+    <!-- Маркер 2 -->
     <a-entity mindar-image-target="targetIndex: 1">
-      <a-entity position="0 0 0.1" rotation="0 0 0" scale="0.15 0.15 0.15">
-        <a-gltf-model src="#dragonModel"></a-gltf-model>
+      <a-entity
+        gltf-model="#dragonModel"
+        auto-fit="size: 0.55; yOffset: 0.01"
+        rotation="0 0 0">
       </a-entity>
     </a-entity>
   </a-scene>
